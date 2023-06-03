@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,10 +23,13 @@ public class GestionFilms {
         listeFilms = new ArrayList<>();
     }
 
-    public void ajouterFilm(Film film) throws FilmAlreadyExistsException, FilmNotFoundException {
+    public void ajouterFilm(Film film) throws FilmAlreadyExistsException, NotFilmException {
     	listeFilms=deserialiserFilms(DATABASE_FILE);
 	   if (rechercherFilmParTitre(film.getTitre()) != null) {
 	       throw new FilmAlreadyExistsException("Le film existe déjà dans la liste.");
+	   }
+	   if(film.getDuree()>200) {
+		   throw new NotFilmException("Un film ne peut pas avoir une durée plus que 200 minutes");
 	   }
 	
 	   listeFilms.add(film);
@@ -48,11 +53,10 @@ public class GestionFilms {
                 break;
             }
         }
-
         if (found) {
             serialiserFilms(DATABASE_FILE);
         } else {
-            throw new FilmNotFoundException("Film non trouvé : " + film.getTitre());
+            throw new FilmNotFoundException(film.getTitre()+ " n'existe pas dans votre base de données :(");
         }
     }
 
@@ -68,7 +72,7 @@ public class GestionFilms {
         return null;
     }
 
-    public void afficherListeFilms() throws EmptyFilmListException, FilmNotFoundException{
+    public void afficherListeFilms() throws EmptyFilmListException {
     	listeFilms=deserialiserFilms(DATABASE_FILE);
         if (listeFilms.isEmpty()) {
             System.out.println("La liste des films est vide.");
@@ -78,6 +82,7 @@ public class GestionFilms {
                 System.out.println("Titre du film : "+ film.getTitre());
                 System.out.println("Genre du film : "+ film.getGenre());
                 System.out.println("Durée du film : " + film.getDuree() + " minutes");
+                System.out.println("Rating : "+ film.getRating());
                 System.out.println("================================================");
             }
         }
@@ -110,5 +115,51 @@ public class GestionFilms {
         }
 		return listeFilms;
     }
+    
+    // Trier les films par Genre
+    public void trierFilmsParGenre() throws EmptyFilmListException{
+    	listeFilms=deserialiserFilms(DATABASE_FILE);
+    	if(!listeFilms.isEmpty()) {
+	        Collections.sort(listeFilms, new Comparator<Film>() {
+	            public int compare(Film film1, Film film2) {
+	                return film1.getGenre().compareTo(film2.getGenre());
+	            }
+	        });
+	        System.out.println("Liste des films triés par Genre :");
+	        serialiserFilms(DATABASE_FILE);
+    }
+	else throw new EmptyFilmListException("La liste des films est vide !");
+    }
+
+    // Trier les films par leurs durées
+    public void trierFilmsParDuree() throws EmptyFilmListException{
+    	listeFilms=deserialiserFilms(DATABASE_FILE);
+    	if(!listeFilms.isEmpty()) {
+        Collections.sort(listeFilms, new Comparator<Film>() {
+            public int compare(Film film1, Film film2) {
+                return Integer.compare(film1.getDuree(), film2.getDuree());
+            }
+        });
+        System.out.println("Liste des films triés par durée :");
+        serialiserFilms(DATABASE_FILE);
+    	}
+		else throw new EmptyFilmListException("La liste des films est vide !");
+    }
+
+    // Trier les films par leurs titres
+	public void trierFilmsParTitre() throws EmptyFilmListException{
+		listeFilms=deserialiserFilms(DATABASE_FILE);
+		if(!listeFilms.isEmpty()) {
+			Collections.sort(listeFilms, new Comparator<Film>() {
+			    public int compare(Film film1, Film film2) {
+			        return film1.getTitre().compareTo(film2.getTitre());
+			    }
+			});
+	        System.out.println("Liste des films triés par Titre :");
+	        serialiserFilms(DATABASE_FILE);
+	}
+		else throw new EmptyFilmListException("La liste des films est vide !");
+	}
+	
 
 }
