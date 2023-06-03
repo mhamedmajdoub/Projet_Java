@@ -1,5 +1,6 @@
 package core;
 import java.io.*;
+import java.util.Date;
 
 public class Film implements Serializable {
 	
@@ -7,12 +8,14 @@ public class Film implements Serializable {
     private String genre;
     private int duree;
     private double rating;
+    private Date dateAjout;
 
     public Film(String titre, String genre, int duree, double rating) {
         this.titre = titre;
         this.genre = genre;
         this.duree = duree;
         this.rating=rating;
+        this.dateAjout = new Date();
     }
 
     // Getters et Setters
@@ -46,6 +49,13 @@ public class Film implements Serializable {
     public void setDuree(int duree) {
         this.duree = duree;
     }
+    public void setDateAjout(Date dateAjout) {
+		this.dateAjout = dateAjout;
+	}
+    public Date getDateAjout() {
+		return dateAjout;
+	}
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

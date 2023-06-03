@@ -83,6 +83,7 @@ public class GestionFilms {
                 System.out.println("Genre du film : "+ film.getGenre());
                 System.out.println("Durée du film : " + film.getDuree() + " minutes");
                 System.out.println("Rating : "+ film.getRating());
+                System.out.println("Date d'ajout : "+ film.getDateAjout());
                 System.out.println("================================================");
             }
         }
@@ -161,5 +162,32 @@ public class GestionFilms {
 		else throw new EmptyFilmListException("La liste des films est vide !");
 	}
 	
+    public void trierFilmsParDateAjoutDescendant() throws EmptyFilmListException {
+    	listeFilms=deserialiserFilms(DATABASE_FILE);
+    	if(!listeFilms.isEmpty()) {
+	        Collections.sort(listeFilms, new Comparator<Film>() {
+	            public int compare(Film film1, Film film2) {
+	                return film1.getDateAjout().compareTo(film2.getDateAjout());
+	            }
+	        });
+	        System.out.println("Liste des films triés par date d'ajout :");
+	        serialiserFilms(DATABASE_FILE);
+    	}
+    	else throw new EmptyFilmListException("La liste des films est vide !");
+    }
 
+    public void trierFilmsParDateAjoutAscendant() throws EmptyFilmListException {
+    	listeFilms=deserialiserFilms(DATABASE_FILE);
+    	if(!listeFilms.isEmpty()) {
+	        Collections.sort(listeFilms, new Comparator<Film>() {
+	            public int compare(Film film1, Film film2) {
+	                return film1.getDateAjout().compareTo(film2.getDateAjout());
+	            }
+	        });
+	        Collections.reverse(listeFilms);
+	        System.out.println("Liste des films triés par date d'ajout :");
+	        serialiserFilms(DATABASE_FILE);
+    	}
+    	else throw new EmptyFilmListException("La liste des films est vide !");
+    }
 }
